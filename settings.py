@@ -11,11 +11,10 @@ DJANGO_SETTINGS_MODULE = 'settings'
 FORCE_SCRIPT_NAME = ''
 DEBUG = True
 LOCAL_DEV = True
-TEMPLATE_DEBUG = DEBUG
 
-ADMINS = (
+ADMINS = [
     ('YOU NAME', 'user@mail.com'),
-)
+]
 
 MANAGERS = ADMINS
 
@@ -30,9 +29,9 @@ DATABASES = {
     }
 }
 
-LOCALE_PATHS = (
+LOCALE_PATHS = [
     '/usr/src/nnmware/locale',
-)
+]
 
 
 TIME_ZONE = 'Europe/Moscow'
@@ -46,14 +45,14 @@ MEDIA_URL = '/m/'
 STATIC_URL = '/static/'
 
 
-STATICFILES_DIRS = (
+STATICFILES_DIRS = [
     '/usr/src/nnmware/static',
-)
+]
 
-STATICFILES_FINDERS = (
+STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-)
+]
 
 # Don't share it with anybody
 SECRET_FILE = os.path.join(DIRNAME, 'secret.txt')
@@ -70,13 +69,7 @@ except IOError:
     except IOError:
         raise Exception('Please create a %s file with random characters to generate your secret key!' % SECRET_FILE)
 
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader')
-
-
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE_CLASSES = [
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
@@ -85,32 +78,41 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.admindocs.middleware.XViewMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-)
+]
 
-AUTHENTICATION_BACKENDS = (
+AUTHENTICATION_BACKENDS = [
     'nnmware.core.backends.UsernameOrEmailAuthBackend',
-)
+]
 
 ROOT_URLCONF = 'urls'
 
-TEMPLATE_DIRS = (
-    os.path.join(DIRNAME, "templates"),
-)
-
-# this is used to add additional config variables to each request
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.contrib.auth.context_processors.auth',
-    'django.core.context_processors.debug',
-    'django.core.context_processors.i18n',
-    'django.core.context_processors.static',
-    'django.core.context_processors.csrf',
-    'django.contrib.messages.context_processors.messages',
-    'django.core.context_processors.request',
-)
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(DIRNAME, "templates"),],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.static',
+                'django.template.context_processors.csrf',
+                'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request',
+            ],
+            'debug': DEBUG,
+            'loaders': [
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
+            ]
+        },
+    },
+]
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -132,12 +134,26 @@ INSTALLED_APPS = (
     'nnmware.apps.realty',
     'nnmware.apps.transport',
     'nnmware.demo',
-)
+]
 
 ABSOLUTE_URL_OVERRIDES = {
     'auth.user': lambda u: "/user/%s/" % u.username,
 }
 
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
 
 try:
     from nnmware_settings import *
